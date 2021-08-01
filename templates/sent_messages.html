@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>This are the sent messages for {{user.username}}</p>
+    <p><a href="/">Home</a></p>
+    {% for messages in sent_message %}
+    <p>Sent message: {{messages.message}} to {{messages.receiver.username}}</p>
+    {% endfor %}
+    <p><a href="/received_messages">Received messages</a></p>
+{% endblock content %}

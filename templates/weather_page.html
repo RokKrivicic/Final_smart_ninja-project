@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>This is the weather page</p>
+    {% if data %}
+    <p>Location : {{data["name"]}}</p>
+    <p>Weather description: {{ data.weather[0].description }}</p>
+    <p>Current temperature: {{ data.main.temp }}</p>
+    <p><a href="/">Home</a></p>
+    {% else %}
+    <form action="/weather_page" method="post">
+        <input type="text" name="city" placeholder="Enter city"><br>
+        <button>Submit</button>
+    </form>
+    {% endif %}
+{% endblock content %}

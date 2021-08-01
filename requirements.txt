@@ -1,0 +1,6 @@
+Flask~=2.0.1
+gunicorn==19.9.0
+sqla-wrapper
+sqlalchemy~=1.4.22
+Werkzeug~=2.0.1
+requests

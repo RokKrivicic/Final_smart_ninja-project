@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>This is the first page!</p>
+    {% if user %}
+    <p>Hello {{user.username}}</p>
+    <p>If you want to check weather got to: <a href="/weather_page">Weather page</a></p>
+    <p>If you want to check your sent messages got to: <a href="/sent_messages">Sent messages</a></p>
+    <p>If you want to check your received messages got to: <a href="/received_messages">Received messages</a></p>
+    <p>If you want to send a message write it in the form</p>
+    <form action="/message" method="post">
+        <input type="text" name="receiver" placeholder="Enter receiver of the message"><br>
+        <input type="text" name="message" placeholder="Enter your message"><br>
+        <button>Submit</button>
+    </form>
+    <p><a href="/logout">Logout</a> </p>
+    {% else %}
+    <p><a href="/registration">Registration</a></p>
+    <form action="/login" method="post">
+        <input type="text" name="user-name" placeholder="Enter your name"><br>
+        <input type="password" name="user-password" placeholder="Enter your password"><br>
+        <button>Submit</button>
+    </form>
+    {% endif %}
+{% endblock content %}

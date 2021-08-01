@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Register here</p>
+    <form method="post" action="/registration">
+        <input type="text" name="contact-username" placeholder="Enter your username">
+        <br>
+
+        <input type="email" name="contact-email" placeholder="Enter email address">
+        <br>
+
+        <input type="password" name ="contact-password" placeholder="Enter Password">
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+{% endblock content %}
