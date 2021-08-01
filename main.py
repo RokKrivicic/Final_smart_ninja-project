@@ -60,7 +60,7 @@ def weather_page():
     elif request.method == "POST":
         city = request.form.get("city")
         unit = "metric"
-        api_key = "fb403b0a2674cb1dd7e610a68ea73b77"
+        api_key = "api key"
 
         url = "https://api.openweathermap.org/data/2.5/weather?q={0}&units={1}&appid={2}".format(city, unit, api_key)
         data = requests.get(url=url)
