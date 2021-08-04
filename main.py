@@ -45,7 +45,10 @@ def index():
 
     if session_token:
         session = db.query(Sessions).filter_by(session_token=session_token).first()
-        user = db.query(User).filter_by(id=session.username_id).first()
+        if session:
+            user = db.query(User).filter_by(id=session.username_id).first()
+        else:
+            user = None
     else:
         user = None
 
@@ -73,10 +76,19 @@ def weather_page():
 @app.route("/sent_messages")
 def sent_messages():
     session_token = request.cookies.get("session_token")
-    session = db.query(Sessions).filter_by(session_token=session_token).first()
-    sent_message = db.query(Message).filter_by(sender_id=session.username_id)
-    user = db.query(User).filter_by(id=session.username_id).first()
-    return render_template("sent_messages.html", sent_message=sent_message, user=user)
+    if session_token:
+        session = db.query(Sessions).filter_by(session_token=session_token).first()
+        if session:
+            sent_message = db.query(Message).filter_by(sender_id=session.username_id)
+            user = db.query(User).filter_by(id=session.username_id).first()
+            return render_template("sent_messages.html", sent_message=sent_message, user=user)
+        else:
+            user = None
+    else:
+        user = None
+
+    return render_template("index.html", user=user)
+
 
 
 @app.route("/received_messages")
@@ -90,33 +102,40 @@ def received_messages():
 
 @app.route("/registration", methods=["GET", "POST"])
 def registration():
-    if request.method == "GET":
-        return render_template("registration.html")
-    elif request.method == "POST":
-        contact_username = request.form.get("contact-username")
-        contact_email = request.form.get("contact-email")
-        contact_password = request.form.get("contact-password")
-        user_username = db.query(User).filter_by(username=contact_username).first()
-        user_email = db.query(User).filter_by(email=contact_email).first()
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        session = db.query(Sessions).filter_by(session_token=session_token).first()
+        if session:
+            user = db.query(User).filter_by(id=session.username_id).first()
+            return render_template("index.html", user=user)
+    else:
+        if request.method == "GET":
+            return render_template("registration.html")
+        elif request.method == "POST":
+            contact_username = request.form.get("contact-username")
+            contact_email = request.form.get("contact-email")
+            contact_password = request.form.get("contact-password")
+            user_username = db.query(User).filter_by(username=contact_username).first()
+            user_email = db.query(User).filter_by(email=contact_email).first()
 
-        if contact_username == '' or contact_email == '' or contact_password == '':
-            return 'You must fill out all the boxes'
-        elif user_username is not None:
-            return 'Username already registered'
-        elif user_email is not None:
-            return 'Email already used'
-        else:
-            user = User(username=contact_username, email=contact_email, password=contact_password)
-            user.save()
-            session_token = str(uuid.uuid4())
-            session = Sessions()
-            session.username_id = user.id
-            session.session_token = session_token
-            session.save()
+            if contact_username == '' or contact_email == '' or contact_password == '':
+                return 'You must fill out all the boxes'
+            elif user_username is not None:
+                return 'Username already registered'
+            elif user_email is not None:
+                return 'Email already used'
+            else:
+                user = User(username=contact_username, email=contact_email, password=contact_password)
+                user.save()
+                session_token = str(uuid.uuid4())
+                session = Sessions()
+                session.username_id = user.id
+                session.session_token = session_token
+                session.save()
 
-            response = make_response(redirect(url_for('index')))
-            response.set_cookie("session_token", session_token, httponly=True, samesite='Strict')
-            return response
+                response = make_response(redirect(url_for('index')))
+                response.set_cookie("session_token", session_token, httponly=True, samesite='Strict')
+                return response
 
 
 @app.route("/login", methods=["POST"])
